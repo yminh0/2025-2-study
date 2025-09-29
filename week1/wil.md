@@ -38,4 +38,7 @@ body: 실제 응답 데이터
 ## API(Application Programming Interface)
 한 프로그램이 다른 프로그램의 기능이나 데이터를 사용할 수 있도록 미리 정해놓은 약속이자 소통 창구
 
+## Whitelabel Error Page 스크린샷
+<img width="1394" height="534" alt="Image" src="https://github.com/user-attachments/assets/2a655c8e-3968-4cc8-9002-ae0fd5750716" />
+
 
