@@ -18,14 +18,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // 멤버 정보 등록
+    // 멤버 등록
     @PostMapping()
     public ResponseEntity<Void> createMember(@RequestBody MemberCreateRequest request){
         Long memberId = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + memberId)).build();
     }
 
-    // 멤버 목록 조회
+    // 모든 멤버 조회
     @GetMapping()
     public ResponseEntity<List<Member>> getAllMembers(){
         // Service 계층에서 회원 목록을 가져온다.
