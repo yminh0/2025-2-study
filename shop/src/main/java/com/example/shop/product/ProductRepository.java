@@ -4,17 +4,27 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ProductRepository {
 
     @PersistenceContext
     private EntityManager em;
 
-    public Product findByName(Long name) {
-        return em.find(Product.class, name);
+    public Product findById(Long id) {
+        return em.find(Product.class, id);
     }
 
-    public Product findAll(Long name) {
+    public Product findByName(String name) {
+        List<Product> result = em.createQuery(
+                "SELECT p FROM Product p WHERE p.name = :name", Product.class
+        ).setParameter("name", name).getResultList();
+
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    public List<Product> findAll() {
         return em.createQuery("SELECT p FROM Product p",Product.class)
                 .getResultList();
     }
@@ -23,8 +33,8 @@ public class ProductRepository {
         em.persist(product);
     }
 
-    public void deleteByName(Long name) {
-        Product product=em.find(Product.class,name);
+    public void deleteById(Long id) {
+        Product product=em.find(Product.class,id);
         em.remove(product);
     }
 

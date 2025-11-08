@@ -1,9 +1,13 @@
 package com.example.shop.product;
 
+import com.example.shop.product.dto.ProductCreateRequest;
+import com.example.shop.product.dto.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.bytecode.internal.bytebuddy.PassThroughInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,27 +18,28 @@ public class ProductService {
 
     @Transactional
     public Long createProduct(ProductCreateRequest request){
-        Product existingProduct = productRepository.findByName(request.getProductName());
+        Product existingProduct = productRepository.findByName(request.getName());
         if(existingProduct != null){
-            throw new RuntimeException("이미 존재하는 상품입니다: " + request.getProductName());
+            throw new RuntimeException("이미 존재하는 상품입니다: " + request.getName());
         }
 
         Product product = new Product(
-                request.getProductName(),
-                request.getPrice()
+                request.getName(),
+                request.getPrice(),
+                request.getInventory()
         );
 
         productRepository.save(product);
 
-        return product.getName();
+        return product.getId();
     }
 
     @Transactional(readOnly = true)
     public List<Product> getAllProducts() { return productRepository.findAll(); }
 
     @Transactional(readOnly = true)
-    public Product getProductByName(Long name){
-        Product product = productRepository.findByName(name);
+    public Product getProductById(Long id){
+        Product product = productRepository.findById(id);
 
         if (product == null){
             throw new RuntimeException("상품을 찾을 수 없습니다.");
@@ -44,27 +49,27 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long name, ProductUpdateRequest request){
-        Product product = productRepository.findByName(name);
+    public void updateProduct(Long id, ProductUpdateRequest request){
+        Product product = productRepository.findById(id);
 
         if (product == null){
             throw new RuntimeException("상품을 찾을 수 없습니다.");
         }
 
         // 상품 정보 수정
-        product.updateInfo(request.getProductName(),request.getPrice());
+        product.updateInfo(request.getName(),request.getPrice(),request.getInventory());
     }
 
     @Transactional
-    public void deleteProduct(Long name){
-        Product product = productRepository.findByName(name);
+    public void deleteProduct(Long id){
+        Product product = productRepository.findById(id);
 
         if (product == null) {
             throw new RuntimeException("상품을 찾을 수 없습니다.");
         }
 
         // Repository를 통해 삭제
-        productRepository.deleteByName(name);
+        productRepository.deleteById(id);
     }
 
 }
