@@ -9,13 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
+//@Service
+//@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
-
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
     @Transactional
     public Long createMember(MemberCreateRequest request){
         Member existingMember = memberRepository.findByLoginId(request.getLoginId());

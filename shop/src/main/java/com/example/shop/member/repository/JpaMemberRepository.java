@@ -2,23 +2,23 @@ package com.example.shop.member;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class MemberRepository {
+public class JpaMemberRepository implements MemberRepository{
 
     @PersistenceContext
     private EntityManager em;
 
     // 개별 회원 정보 조회
+    @Override
     public Member findById(Long id) {
         return em.find(Member.class, id);
     }
 
     // 전체 회원 목록 조회
     //em.find는 하나밖에 조회 못함 -> JPQL 사용
+    @Override
     public List<Member> findAll() {
         return em.createQuery("SELECT m FROM Member m", Member.class)
                 .getResultList();
@@ -29,6 +29,7 @@ public class MemberRepository {
     // 중복된 로그인 아이디가 있는지 확인
     // 예시) findByLoginId("abc123")
     //      SELECT * FROM member WHERE login_id = 'abc123';
+    @Override
     public Member findByLoginId(String loginId) {
         List<Member> result = em.createQuery(
                 "SELECT m FROM Member m WHERE m.loginId = :loginId", Member.class
@@ -40,15 +41,15 @@ public class MemberRepository {
     }
 
     // 회원 정보 저장
+    @Override
     public void save(Member member) {
         em.persist(member);
     }
 
     // 회원 정보 삭제
+    @Override
     public void deleteById(Long id) {
         Member member = em.find(Member.class, id);
         em.remove(member);
     }
-
-
 }
